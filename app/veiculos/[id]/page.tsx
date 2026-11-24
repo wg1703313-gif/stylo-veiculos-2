@@ -1,0 +1,16 @@
+import Link from "next/link";
+import { ArrowLeft, ArrowRight, CalendarDays, Gauge, MapPin, ShieldCheck, Sparkles } from "lucide-react";
+import Footer from "@/components/Footer";
+import { getVehicles, sampleVehicles } from "@/lib/vehicles";
+import { store, whatsappLink } from "@/lib/store";
+
+export const dynamic = "force-dynamic";
+const currency = (n: number | null) => n == null ? "Consulte a loja" : n.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
+export default async function VehicleDetails({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const { vehicles } = await getVehicles();
+  const vehicle = [...vehicles, ...sampleVehicles].find(v => v.id === id);
+  if (!vehicle) return <main className="detail-page"><div className="detail-top wrap"><Link href="/" className="back-link"><ArrowLeft size={16} /> Voltar ao estoque</Link></div><section className="detail-missing"><span>♡</span><h1>Esse carro já seguiu viagem.</h1><p>Mas tem outras boas escolhas esperando por você.</p><Link href="/" className="button-primary">Ver veículos disponíveis <ArrowRight size={16} /></Link></section><Footer /></main>;
+  const message = `Olá! Tenho interesse no ${vehicle.titulo}, ${vehicle.ano}. Ainda está disponível? Gostaria de conversar sobre a melhor condição.`;
+  return <main className="detail-page"><div className="detail-top wrap"><Link href="/" className="brand"><span className="brand-mark">S</span><span><strong>stylo</strong><small>VEÍCULOS</small></span></Link><Link href="/#estoque" className="back-link"><ArrowLeft size={16} /> Voltar ao estoque</Link></div><section className="detail-layout wrap"><div className="detail-photo">{vehicle.imagem_url ? <img src={vehicle.imagem_url} alt={vehicle.titulo} /> : <div className="photo-empty">Stylo Veículos</div>}<span className="photo-tag"><span /> {vehicle.status}</span></div><article className="detail-info"><span className="eyebrow"><span /> {vehicle.marca} · {vehicle.modelo}</span><h1>{vehicle.titulo}</h1><div className="detail-meta"><span><CalendarDays size={16} /> {vehicle.ano}</span><span><Gauge size={16} /> {vehicle.quilometragem == null ? "Quilometragem sob consulta" : `${vehicle.quilometragem.toLocaleString("pt-BR")} km`}</span></div><div className="detail-price"><small><Sparkles size={14} /> Estimativa inicial gerada por IA</small><strong>{currency(vehicle.preco_estimado_ia)}</strong><p>Valor estimado para referência. O preço final pode variar após avaliação e é negociável diretamente com a loja.</p></div><div className="detail-description"><h2>Sobre este veículo</h2><p>{vehicle.descricao || "Fale com a equipe Stylo para receber todos os detalhes deste veículo."}</p></div><a className="button-primary detail-whatsapp" href={whatsappLink(message)} target="_blank" rel="noreferrer"><span>Converse com a Stylo pelo WhatsApp<strong>Negocie a melhor condição para você</strong></span><ArrowRight size={19} /></a><p className="detail-trust"><ShieldCheck size={15} /> Atendimento direto com a loja · {store.phoneDisplay}</p><a className="detail-map" href={store.mapsUrl} target="_blank" rel="noreferrer"><MapPin size={15} /> Ver localização da loja</a></article></section><Footer /></main>;
+}
