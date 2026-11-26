@@ -5,8 +5,8 @@ export const store = {
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "5596984186541",
   address: "Rua Professor Tostes, 2858 — Buritizal, Macapá — AP",
   mapsUrl: "https://www.google.com/maps/search/?api=1&query=Stylo+Ve%C3%ADculos+Rua+Professor+Tostes+2858+Macap%C3%A1+AP",
-  instagramUrl: "",
-  instagramHandle: "@seu_instagram_aqui",
+  instagramUrl: "https://www.instagram.com/styloveiculosmcp/",
+  instagramHandle: "@styloveiculosmcp",
 };
 
 export function whatsappLink(message: string) {
